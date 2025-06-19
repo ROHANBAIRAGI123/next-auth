@@ -1,6 +1,7 @@
 "use client";
 
 import React, { use } from "react";
+import { Toaster } from "react-hot-toast";
 
 export default function Profile({
   params,
@@ -10,6 +11,9 @@ export default function Profile({
   const { id } = use(params);
   return (
     <div>
+      <div>
+        <Toaster />
+      </div>
       Profile
       <span> params.id: {id}</span>
     </div>

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 type User = {
   username: string;
@@ -21,7 +23,7 @@ export default function Register() {
     email: "",
     password: "",
   });
-
+  const router = useRouter();
   const [errors, setErrors] = useState<Errors>({});
   const [loading, setLoading] = useState(false);
 
@@ -51,9 +53,24 @@ export default function Register() {
       try {
         setLoading(true);
         const response = await axios.post("/api/users/register", user);
-        console.log(response.data);
-        console.log("Form is valid, submitting...", user);
+        toast
+          .promise(
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                resolve("Register successful");
+              }, 1000);
+            }),
+            {
+              loading: "Registering...",
+              success: "Register successful",
+              error: "Register failed",
+            }
+          )
+          .then(() => {
+            router.push("/profile");
+          });
       } catch (error) {
+        toast.error("Login failed");
         console.error("Error:", error);
       } finally {
         setLoading(false);
@@ -68,6 +85,9 @@ export default function Register() {
 
   return (
     <div className="w-full h-screen  flex justify-center items-center">
+      <div>
+        <Toaster />
+      </div>
       <div className="w-1/3 h-fit bg-gray-900 rounded-2xl shadow-lg shadow-black pt-5 px-5 py-2">
         <form className="flex justify-center flex-wrap" onSubmit={handleSubmit}>
           <h2 className="text-white text-center font-bold text-3xl p-2">

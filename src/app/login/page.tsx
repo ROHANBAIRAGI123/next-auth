@@ -3,6 +3,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 
 type User = {
   email: string;
@@ -46,9 +47,24 @@ export default function Login() {
       try {
         setLoading(true);
         const response = await axios.post("/api/users/login", user);
-        console.log(response.data);
-        router.push("/profile");
+        toast
+          .promise(
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                resolve("Login successful");
+              }, 1000);
+            }),
+            {
+              loading: "Logging in...",
+              success: "Login successful",
+              error: "Login failed",
+            }
+          )
+          .then(() => {
+            router.push("/profile");
+          });
       } catch (error) {
+        toast.error("Login failed");
         console.error("Error:", error);
       } finally {
         setLoading(false);
@@ -58,6 +74,9 @@ export default function Login() {
 
   return (
     <div className="w-full h-screen  flex justify-center items-center">
+      <div>
+        <Toaster />
+      </div>
       <div className="w-1/3 h-fit bg-gray-900 rounded-2xl shadow-lg shadow-black pt-5 px-5 py-2">
         <form className="flex justify-center flex-wrap" onSubmit={handleSubmit}>
           <h2 className="text-white text-center font-bold text-3xl p-2">
