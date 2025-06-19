@@ -53,6 +53,7 @@ export default function Register() {
       try {
         setLoading(true);
         const response = await axios.post("/api/users/register", user);
+
         toast
           .promise(
             new Promise((resolve, reject) => {
@@ -67,10 +68,10 @@ export default function Register() {
             }
           )
           .then(() => {
-            router.push("/profile");
+            router.push("/login");
           });
       } catch (error) {
-        toast.error("Login failed");
+        toast.error("Register failed");
         console.error("Error:", error);
       } finally {
         setLoading(false);
